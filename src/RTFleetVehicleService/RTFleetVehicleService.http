@@ -1,0 +1,6 @@
+@RTFleetVehicleService_HostAddress = http://localhost:5186
+
+GET {{RTFleetVehicleService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

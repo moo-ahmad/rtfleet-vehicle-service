@@ -9,4 +9,21 @@ namespace RTFleetVehicleService.Domain.Common
     public class SystemEnums
     {
     }
+
+    public enum VehicleStatus
+    {
+        Moving,
+        Idle,
+        Alert,
+        Maintenance,
+        Unknown
+    }
+
+    public enum VehicleType
+    {
+        BoxTruck,
+        CargoVan,
+        Flatbed,
+        Tanker
+    }
 }

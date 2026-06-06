@@ -7,6 +7,7 @@ namespace RTFleetVehicleService.Infrastructure.Data
     public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<Driver> Drivers { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -33,6 +34,19 @@ namespace RTFleetVehicleService.Infrastructure.Data
                 e.Property(v => v.RowVersion).IsRowVersion();
                 e.HasIndex(v => new { v.TenantId, v.VIN }).IsUnique().HasDatabaseName("UQ_Vehicles_TenantVIN");
                 e.HasIndex(v => new { v.TenantId, v.Plate }).IsUnique().HasDatabaseName("UQ_Vehicles_TenantPlate");
+            });
+
+            builder.Entity<Driver>(e =>
+            {
+                e.ToTable("Drivers");
+                e.HasKey(d => d.Id);
+                e.Property(d => d.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+                e.Property(d => d.FirstName).HasMaxLength(100).IsRequired();
+                e.Property(d => d.LastName).HasMaxLength(100).IsRequired();
+                e.Property(d => d.LicenseNumber).HasMaxLength(50).IsRequired();
+                e.Property(d => d.PhoneNumber).HasMaxLength(20);
+                e.Property(d => d.PhotoUrl).HasMaxLength(1000);
+                e.HasIndex(d => new { d.TenantId, d.LicenseNumber}).IsUnique().HasDatabaseName("UQ_Drivers_TenantLicense");
             });
         }
     }

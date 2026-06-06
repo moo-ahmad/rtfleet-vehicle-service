@@ -1,4 +1,4 @@
-using MediatR;
+    using MediatR;
 using RTFleetVehicleService.Application.Features.Vehicles.DTOs;
 using RTFleetVehicleService.Application.Interfaces;
 using RTFleetVehicleService.Domain.Entities;

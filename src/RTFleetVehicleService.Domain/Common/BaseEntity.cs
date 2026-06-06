@@ -10,6 +10,7 @@ namespace RTFleetVehicleService.Domain.Common
     {
         public Guid Id { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public Guid CreatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
     }

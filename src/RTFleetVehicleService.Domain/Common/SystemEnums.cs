@@ -26,4 +26,12 @@ namespace RTFleetVehicleService.Domain.Common
         Flatbed,
         Tanker
     }
+
+    public enum MaintenanceType
+    {
+        OilChange,
+        TyreRotation,
+        BrakeInspection,
+        AnnualService
+    }
 }

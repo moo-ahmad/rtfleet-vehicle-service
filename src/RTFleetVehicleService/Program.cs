@@ -1,5 +1,6 @@
 using RTFleetVehicleService.API;
 using RTFleetVehicleService.API.Middleware;
+using RTFleetVehicleService.Infrastructure.Data;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        await ApplicationDbContextSeeder.SeedAsync(dbContext);
+    }
 }
 
 app.UseSerilogRequestLogging();

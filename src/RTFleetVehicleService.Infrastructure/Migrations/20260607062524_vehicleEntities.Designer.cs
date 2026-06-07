@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RTFleetVehicleService.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using RTFleetVehicleService.Infrastructure.Data;
 namespace RTFleetVehicleService.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260607062524_vehicleEntities")]
+    partial class vehicleEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -427,7 +430,7 @@ namespace RTFleetVehicleService.Infrastructure.Migrations
                     b.HasOne("RTFleetVehicleService.Domain.Entities.Vehicle", null)
                         .WithMany()
                         .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

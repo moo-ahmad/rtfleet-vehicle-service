@@ -24,7 +24,7 @@ namespace RTFleetVehicleService.API.Controllers
         {
             var query = new GetDriversQuery(tenantId);
             var result = await _mediator.Send(query);
-            return Ok(result);
+            return Ok(APIResponse<IReadOnlyList<DriverDto>>.Success(result));
         }
 
         [HttpGet("{id:guid}")]

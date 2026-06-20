@@ -21,7 +21,7 @@ namespace RTFleetVehicleService.Application.Features.MaintenanceSchedules.Comman
                 IntervalKm = request.IntervalKm,
                 IntervalDays = request.IntervalDays,
                 IsActive = true,
-                CreatedAt = DateTimeOffset.UtcNow
+                CreatedAt = DateTime.UtcNow
             };
 
             _db.MaintenanceSchedules.Add(schedule);

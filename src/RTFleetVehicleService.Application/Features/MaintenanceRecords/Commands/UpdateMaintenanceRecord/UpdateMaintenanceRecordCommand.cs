@@ -5,7 +5,7 @@ namespace RTFleetVehicleService.Application.Features.MaintenanceRecords.Commands
 {
     public record UpdateMaintenanceRecordCommand(
         Guid Id,
-        DateTimeOffset PerformedAt,
+        DateTime PerformedAt,
         decimal OdometerKm,
         string? TechnicianName,
         decimal? CostAmount,

@@ -62,7 +62,7 @@ namespace RTFleetVehicleService.Infrastructure.Data
                 e.ToTable("VehicleAssignments");
                 e.HasKey(a => a.Id);
                 e.Property(a => a.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
-                e.Property(a => a.AssignedAt).HasDefaultValueSql("SYSDATETIMEOFFSET()");
+                e.Property(a => a.AssignedAt).HasDefaultValueSql("SYSUTCDATETIME()");
                 e.Property(a => a.Notes).HasMaxLength(500);
                 e.HasOne<Vehicle>().WithMany().HasForeignKey(a => a.VehicleId);
                 e.HasOne<Driver>().WithMany().HasForeignKey(a => a.DriverId);
@@ -77,14 +77,14 @@ namespace RTFleetVehicleService.Infrastructure.Data
                 e.Property(g => g.Name).HasMaxLength(200).IsRequired();
                 e.Property(g => g.Description).HasMaxLength(500);
                 e.Property(g => g.ColourHex).HasMaxLength(7).IsFixedLength().IsRequired().HasDefaultValue("#2e75b6");
-                e.Property(g => g.CreatedAt).HasDefaultValueSql("SYSDATETIMEOFFSET()");
+                e.Property(g => g.CreatedAt).HasDefaultValueSql("SYSUTCDATETIME()");
             });
 
             builder.Entity<VehicleGroupMembership>(e =>
             {
                 e.ToTable("VehicleGroupMemberships");
                 e.HasKey(m => new { m.VehicleId, m.GroupId });
-                e.Property(m => m.AddedAt).HasDefaultValueSql("SYSDATETIMEOFFSET()");
+                e.Property(m => m.AddedAt).HasDefaultValueSql("SYSUTCDATETIME()");
                 e.HasOne<Vehicle>().WithMany().HasForeignKey(m => m.VehicleId);
                 e.HasOne<VehicleGroup>().WithMany().HasForeignKey(m => m.GroupId);
             });
@@ -98,7 +98,7 @@ namespace RTFleetVehicleService.Infrastructure.Data
                 e.Property(s => s.LastServiceKm).HasColumnType("decimal(10,2)");
                 e.Property(s => s.NextDueKm).HasColumnType("decimal(10,2)");
                 e.Property(s => s.IsActive).IsRequired().HasDefaultValue(true);
-                e.Property(s => s.CreatedAt).HasDefaultValueSql("SYSDATETIMEOFFSET()");
+                e.Property(s => s.CreatedAt).HasDefaultValueSql("SYSUTCDATETIME()");
                 e.HasOne<Vehicle>().WithMany().HasForeignKey(s => s.VehicleId);
                 e.HasIndex(s => s.NextDueAt).HasFilter("[IsActive] = 1").HasDatabaseName("IX_MaintenanceSchedules_Due");
             });
@@ -113,7 +113,7 @@ namespace RTFleetVehicleService.Infrastructure.Data
                 e.Property(r => r.CostAmount).HasColumnType("decimal(10,2)");
                 e.Property(r => r.CostCurrency).HasMaxLength(3).IsFixedLength().HasDefaultValue("USD");
                 e.Property(r => r.Notes).HasMaxLength(1000);
-                e.Property(r => r.CreatedAt).HasDefaultValueSql("SYSDATETIMEOFFSET()");
+                e.Property(r => r.CreatedAt).HasDefaultValueSql("SYSUTCDATETIME()");
                 e.HasOne<MaintenanceSchedule>().WithMany().HasForeignKey(r => r.ScheduleId);
                 e.HasOne<Vehicle>().WithMany().HasForeignKey(r => r.VehicleId).OnDelete(DeleteBehavior.Restrict);
             });
@@ -125,7 +125,7 @@ namespace RTFleetVehicleService.Infrastructure.Data
                 e.Property(m => m.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
                 e.Property(m => m.EventType).HasMaxLength(200).IsRequired();
                 e.Property(m => m.Payload).IsRequired();
-                e.Property(m => m.CreatedAt).HasDefaultValueSql("SYSDATETIMEOFFSET()");
+                e.Property(m => m.CreatedAt).HasDefaultValueSql("SYSUTCDATETIME()");
                 e.Property(m => m.FailureCount).IsRequired().HasDefaultValue((byte)0);
                 e.Property(m => m.LastError).HasMaxLength(500);
                 e.HasIndex(m => m.CreatedAt).HasFilter("[ProcessedAt] IS NULL").HasDatabaseName("IX_OutboxMessages_Unprocessed");

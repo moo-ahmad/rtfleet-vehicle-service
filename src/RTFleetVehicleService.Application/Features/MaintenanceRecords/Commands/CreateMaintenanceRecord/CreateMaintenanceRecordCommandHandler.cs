@@ -24,7 +24,7 @@ namespace RTFleetVehicleService.Application.Features.MaintenanceRecords.Commands
                 CostAmount = request.CostAmount,
                 CostCurrency = request.CostCurrency ?? "USD",
                 Notes = request.Notes,
-                CreatedAt = DateTimeOffset.UtcNow
+                CreatedAt = DateTime.UtcNow
             };
 
             _db.MaintenanceRecords.Add(record);

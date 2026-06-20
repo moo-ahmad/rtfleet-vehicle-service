@@ -4,6 +4,6 @@ namespace RTFleetVehicleService.Application.Features.VehicleGroupMemberships.DTO
     {
         public Guid VehicleId { get; set; }
         public Guid GroupId { get; set; }
-        public DateTimeOffset AddedAt { get; set; }
+        public DateTime AddedAt { get; set; }
     }
 }

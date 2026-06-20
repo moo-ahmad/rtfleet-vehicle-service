@@ -13,7 +13,7 @@ namespace RTFleetVehicleService.Infrastructure.Data
             if (await context.Vehicles.AnyAsync())
                 return;
 
-            var now = DateTimeOffset.UtcNow;
+            var now = DateTime.UtcNow;
 
             var drivers = new List<Driver>
             {

@@ -6,7 +6,7 @@ namespace RTFleetVehicleService.Application.Features.MaintenanceRecords.Commands
     public record CreateMaintenanceRecordCommand(
         Guid ScheduleId,
         Guid VehicleId,
-        DateTimeOffset PerformedAt,
+        DateTime PerformedAt,
         decimal OdometerKm,
         string? TechnicianName,
         decimal? CostAmount,

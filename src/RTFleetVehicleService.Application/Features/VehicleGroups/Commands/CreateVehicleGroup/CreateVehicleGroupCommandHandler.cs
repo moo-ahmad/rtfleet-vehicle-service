@@ -20,7 +20,7 @@ namespace RTFleetVehicleService.Application.Features.VehicleGroups.Commands.Crea
                 Name = request.Name,
                 Description = request.Description,
                 ColourHex = request.ColourHex ?? "#2e75b6",
-                CreatedAt = DateTimeOffset.UtcNow
+                CreatedAt = DateTime.UtcNow
             };
 
             _db.VehicleGroups.Add(group);

@@ -17,7 +17,7 @@ namespace RTFleetVehicleService.Application.Features.Vehicles.Commands.DeleteVeh
                 ?? throw new KeyNotFoundException($"Vehicle {request.Id} not found.");
 
             vehicle.IsDeleted = true;
-            vehicle.DeletedAt = DateTimeOffset.UtcNow;
+            vehicle.DeletedAt = DateTime.UtcNow;
 
             await _db.SaveChangesAsync(cancellationToken);
 

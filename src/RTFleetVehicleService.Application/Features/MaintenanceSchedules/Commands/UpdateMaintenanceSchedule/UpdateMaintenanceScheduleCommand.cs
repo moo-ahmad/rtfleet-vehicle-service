@@ -8,9 +8,9 @@ namespace RTFleetVehicleService.Application.Features.MaintenanceSchedules.Comman
         string Type,
         int? IntervalKm,
         int? IntervalDays,
-        DateTimeOffset? LastServiceAt,
+        DateTime? LastServiceAt,
         decimal? LastServiceKm,
-        DateTimeOffset? NextDueAt,
+        DateTime? NextDueAt,
         decimal? NextDueKm,
         bool IsActive
     ) : IRequest<MaintenanceScheduleDto>;

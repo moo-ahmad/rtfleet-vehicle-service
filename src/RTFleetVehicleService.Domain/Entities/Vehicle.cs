@@ -14,7 +14,7 @@ namespace RTFleetVehicleService.Domain.Entities
         public string Status { get; set; } = "Idle";
         public byte HealthScore { get; set; } = 100;
         public decimal OdometerKm { get; set; } = 0;
-        public DateTimeOffset? DeletedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
         public Guid CreatedBy { get; set; }
         public byte[] RowVersion { get; set; } = Array.Empty<byte>();
     }

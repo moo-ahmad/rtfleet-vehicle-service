@@ -18,7 +18,7 @@ namespace RTFleetVehicleService.Application.Features.VehicleAssignments.Commands
                 Id = Guid.NewGuid(),
                 VehicleId = request.VehicleId,
                 DriverId = request.DriverId,
-                AssignedAt = DateTimeOffset.UtcNow,
+                AssignedAt = DateTime.UtcNow,
                 Notes = request.Notes
             };
 

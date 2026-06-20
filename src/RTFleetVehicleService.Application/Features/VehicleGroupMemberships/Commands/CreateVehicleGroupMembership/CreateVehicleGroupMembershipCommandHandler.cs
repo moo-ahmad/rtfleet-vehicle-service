@@ -17,7 +17,7 @@ namespace RTFleetVehicleService.Application.Features.VehicleGroupMemberships.Com
             {
                 VehicleId = request.VehicleId,
                 GroupId = request.GroupId,
-                AddedAt = DateTimeOffset.UtcNow
+                AddedAt = DateTime.UtcNow
             };
 
             _db.VehicleGroupMemberships.Add(membership);

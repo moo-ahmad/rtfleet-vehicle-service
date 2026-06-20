@@ -7,6 +7,6 @@ namespace RTFleetVehicleService.Application.Features.VehicleGroups.DTOs
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
         public string ColourHex { get; set; } = "#2e75b6";
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

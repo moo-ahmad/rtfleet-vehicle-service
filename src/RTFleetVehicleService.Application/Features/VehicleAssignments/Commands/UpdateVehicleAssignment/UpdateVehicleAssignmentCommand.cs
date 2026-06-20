@@ -5,7 +5,7 @@ namespace RTFleetVehicleService.Application.Features.VehicleAssignments.Commands
 {
     public record UpdateVehicleAssignmentCommand(
         Guid Id,
-        DateTimeOffset? UnassignedAt,
+        DateTime? UnassignedAt,
         string? Notes
     ) : IRequest<VehicleAssignmentDto>;
 }

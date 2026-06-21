@@ -12,7 +12,6 @@ namespace RTFleetVehicleService.Application.Interfaces
         DbSet<VehicleGroupMembership> VehicleGroupMemberships { get; }
         DbSet<MaintenanceSchedule> MaintenanceSchedules { get; }
         DbSet<MaintenanceRecord> MaintenanceRecords { get; }
-        DbSet<OutboxMessage> OutboxMessages { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

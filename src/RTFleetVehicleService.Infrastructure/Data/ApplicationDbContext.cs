@@ -1,3 +1,5 @@
+using MassTransit;
+using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
 using RTFleetVehicleService.Application.Interfaces;
 using RTFleetVehicleService.Domain.Entities;
@@ -13,7 +15,6 @@ namespace RTFleetVehicleService.Infrastructure.Data
         public DbSet<VehicleGroupMembership> VehicleGroupMemberships { get; set; }
         public DbSet<MaintenanceSchedule> MaintenanceSchedules { get; set; }
         public DbSet<MaintenanceRecord> MaintenanceRecords { get; set; }
-        public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -118,18 +119,9 @@ namespace RTFleetVehicleService.Infrastructure.Data
                 e.HasOne<Vehicle>().WithMany().HasForeignKey(r => r.VehicleId).OnDelete(DeleteBehavior.Restrict);
             });
 
-            builder.Entity<OutboxMessage>(e =>
-            {
-                e.ToTable("OutboxMessages");
-                e.HasKey(m => m.Id);
-                e.Property(m => m.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
-                e.Property(m => m.EventType).HasMaxLength(200).IsRequired();
-                e.Property(m => m.Payload).IsRequired();
-                e.Property(m => m.CreatedAt).HasDefaultValueSql("SYSUTCDATETIME()");
-                e.Property(m => m.FailureCount).IsRequired().HasDefaultValue((byte)0);
-                e.Property(m => m.LastError).HasMaxLength(500);
-                e.HasIndex(m => m.CreatedAt).HasFilter("[ProcessedAt] IS NULL").HasDatabaseName("IX_OutboxMessages_Unprocessed");
-            });
+            builder.AddInboxStateEntity();
+            builder.AddOutboxMessageEntity();
+            builder.AddOutboxStateEntity();
         }
     }
 }

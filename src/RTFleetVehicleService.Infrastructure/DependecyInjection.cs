@@ -1,9 +1,11 @@
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RTFleet.Shared.Common.Dapper;
 using RTFleetVehicleService.Application.Interfaces;
 using RTFleetVehicleService.Infrastructure.Data;
+using RTFleetVehicleService.Infrastructure.Messaging;
 
 namespace RTFleetVehicleService.Infrastructure
 {
@@ -18,6 +20,36 @@ namespace RTFleetVehicleService.Infrastructure
 
             services.AddSingleton<IDapperRepository>(
                 new DapperRepository(configuration.GetConnectionString("DefaultConnection")));
+
+            var rabbitMqSection = configuration.GetSection(RabbitMqOptions.SectionName);
+            var rabbitMqOptions = new RabbitMqOptions
+            {
+                Host = rabbitMqSection["Host"] ?? "localhost",
+                VirtualHost = rabbitMqSection["VirtualHost"] ?? "/",
+                Username = rabbitMqSection["Username"] ?? "guest",
+                Password = rabbitMqSection["Password"] ?? "guest"
+            };
+
+            services.AddMassTransit(x =>
+            {
+                x.AddEntityFrameworkOutbox<ApplicationDbContext>(o =>
+                {
+                    o.UseSqlServer();
+                    o.UseBusOutbox();
+                    o.QueryDelay = TimeSpan.FromSeconds(1);
+                });
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(rabbitMqOptions.Host, rabbitMqOptions.VirtualHost, h =>
+                    {
+                        h.Username(rabbitMqOptions.Username);
+                        h.Password(rabbitMqOptions.Password);
+                    });
+
+                    cfg.ConfigureEndpoints(context);
+                });
+            });
 
             return services;
         }

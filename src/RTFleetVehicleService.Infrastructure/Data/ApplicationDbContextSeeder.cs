@@ -259,40 +259,6 @@ namespace RTFleetVehicleService.Infrastructure.Data
                 }
             };
 
-            var outboxMessages = new List<OutboxMessage>
-            {
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    EventType = "VehicleRegisteredEvent",
-                    Payload = "{\"vehicleId\":\"" + vehicles[0].Id + "\",\"vin\":\"" + vehicles[0].VIN + "\",\"tenantId\":\"" + TenantId + "\"}",
-                    CreatedAt = now.AddDays(-90),
-                    ProcessedAt = now.AddDays(-90).AddMinutes(2),
-                    FailureCount = 0,
-                    LastError = null
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    EventType = "VehicleAssignmentCreatedEvent",
-                    Payload = "{\"assignmentId\":\"" + assignments[1].Id + "\",\"vehicleId\":\"" + vehicles[1].Id + "\",\"driverId\":\"" + drivers[1].Id + "\"}",
-                    CreatedAt = now.AddDays(-10),
-                    ProcessedAt = null,
-                    FailureCount = 0,
-                    LastError = null
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    EventType = "MaintenanceScheduleDueEvent",
-                    Payload = "{\"scheduleId\":\"" + schedules[2].Id + "\",\"vehicleId\":\"" + vehicles[2].Id + "\",\"type\":\"AnnualService\"}",
-                    CreatedAt = now.AddDays(-1),
-                    ProcessedAt = null,
-                    FailureCount = 1,
-                    LastError = "SMTP timeout while notifying maintenance team"
-                }
-            };
-
             await context.Drivers.AddRangeAsync(drivers);
             await context.Vehicles.AddRangeAsync(vehicles);
             await context.VehicleAssignments.AddRangeAsync(assignments);
@@ -300,7 +266,6 @@ namespace RTFleetVehicleService.Infrastructure.Data
             await context.VehicleGroupMemberships.AddRangeAsync(memberships);
             await context.MaintenanceSchedules.AddRangeAsync(schedules);
             await context.MaintenanceRecords.AddRangeAsync(records);
-            await context.OutboxMessages.AddRangeAsync(outboxMessages);
 
             await context.SaveChangesAsync();
         }

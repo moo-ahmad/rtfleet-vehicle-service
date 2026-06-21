@@ -1,4 +1,6 @@
-    using MediatR;
+    using MassTransit;
+using MediatR;
+using RTFleet.Shared.Contract.V1.Events;
 using RTFleetVehicleService.Application.Features.Vehicles.DTOs;
 using RTFleetVehicleService.Application.Interfaces;
 using RTFleetVehicleService.Domain.Entities;
@@ -8,8 +10,13 @@ namespace RTFleetVehicleService.Application.Features.Vehicles.Commands.CreateVeh
     public class CreateVehicleCommandHandler : IRequestHandler<CreateVehicleCommand, VehicleDto>
     {
         private readonly IApplicationDbContext _db;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public CreateVehicleCommandHandler(IApplicationDbContext db) => _db = db;
+        public CreateVehicleCommandHandler(IApplicationDbContext db, IPublishEndpoint publishEndpoint)
+        {
+            _db = db;
+            _publishEndpoint = publishEndpoint;
+        }
 
         public async Task<VehicleDto> Handle(CreateVehicleCommand request, CancellationToken cancellationToken)
         {
@@ -31,6 +38,18 @@ namespace RTFleetVehicleService.Application.Features.Vehicles.Commands.CreateVeh
             };
 
             _db.Vehicles.Add(vehicle);
+
+            await _publishEndpoint.Publish(new VehicleRegisteredEvent(
+                EventId: Guid.NewGuid(),
+                VehicleId: vehicle.Id,
+                TenantId: vehicle.TenantId,
+                VIN: vehicle.VIN,
+                Plate: vehicle.Plate,
+                Type: vehicle.Type,
+                OccurredAt: vehicle.CreatedAt
+            ), cancellationToken);
+
+            // Outbox: event and entity write committed in the same SaveChangesAsync transaction
             await _db.SaveChangesAsync(cancellationToken);
 
             return MapToDto(vehicle);

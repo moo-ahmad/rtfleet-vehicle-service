@@ -1,5 +1,7 @@
+using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using RTFleet.Shared.Contract.V1.Events;
 using RTFleetVehicleService.Application.Features.Vehicles.DTOs;
 using RTFleetVehicleService.Application.Interfaces;
 using RTFleetVehicleService.Domain.Entities;
@@ -9,14 +11,21 @@ namespace RTFleetVehicleService.Application.Features.Vehicles.Commands.UpdateVeh
     public class UpdateVehicleCommandHandler : IRequestHandler<UpdateVehicleCommand, VehicleDto>
     {
         private readonly IApplicationDbContext _db;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public UpdateVehicleCommandHandler(IApplicationDbContext db) => _db = db;
+        public UpdateVehicleCommandHandler(IApplicationDbContext db, IPublishEndpoint publishEndpoint)
+        {
+            _db = db;
+            _publishEndpoint = publishEndpoint;
+        }
 
         public async Task<VehicleDto> Handle(UpdateVehicleCommand request, CancellationToken cancellationToken)
         {
             var vehicle = await _db.Vehicles
                 .FirstOrDefaultAsync(v => v.Id == request.Id && v.TenantId == request.TenantId && !v.IsDeleted, cancellationToken)
                 ?? throw new KeyNotFoundException($"Vehicle {request.Id} not found.");
+
+            var previousStatus = vehicle.Status;
 
             vehicle.Plate = request.Plate;
             vehicle.Type = request.Type;
@@ -28,6 +37,20 @@ namespace RTFleetVehicleService.Application.Features.Vehicles.Commands.UpdateVeh
             vehicle.OdometerKm = request.OdometerKm;
             vehicle.UpdatedAt = DateTime.UtcNow;
 
+            if (vehicle.Status != previousStatus)
+            {
+                await _publishEndpoint.Publish(new VehicleStatusChangedEvent(
+                    EventId: Guid.NewGuid(),
+                    VehicleId: vehicle.Id,
+                    TenantId: vehicle.TenantId,
+                    PreviousStatus: previousStatus,
+                    NewStatus: vehicle.Status,
+                    HealthScore: vehicle.HealthScore,
+                    OccurredAt: vehicle.UpdatedAt.Value
+                ), cancellationToken);
+            }
+
+            // Outbox: event and entity update committed in the same SaveChangesAsync transaction
             await _db.SaveChangesAsync(cancellationToken);
 
             return MapToDto(vehicle);
